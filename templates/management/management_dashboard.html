@@ -1,0 +1,174 @@
+{% extends 'layout/admin_layout.html' %}
+{% load static %}
+{% block dash %}
+active
+{% endblock %}
+{% block page_title %}
+<h3>Management || Dashboard</h3>
+
+
+{% if not batch_to_del %}
+<P>You do not currently have any delete requests.</P>
+{% endif %}
+
+{% endblock %}
+{% block css %}
+<link href="{% static 'vendors/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+{% endblock %}
+{% block js %}
+<script src="{% static 'vendors/datatables/jquery.dataTables.min.js'%}"></script>
+<script src="{% static 'vendors/datatables/dataTables.bootstrap4.min.js'%}"></script>
+<script src="{% static 'js/demo/datatables-demo.js'%}"></script>
+{% endblock %}
+{% block add %}
+<div class="btn-group">
+    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false">
+        Action
+    </button>
+    <div class="dropdown-menu">
+        <a class="dropdown-item" href="{% url 'stock_system:new-staff' %}">
+            <i class="mdi mdi-account-multiple-plus" title="Add new staff"> New Staff</i>
+        </a>
+        <a class="dropdown-item btn btn-outline" href="#" data-toggle="modal" data-target="#staticBackdrop">
+            <i class=" mdi mdi-blogger" title="Add new brand"> New Brand</i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+{% block contents %}
+<form action="#" method="post">{% csrf_token %}
+    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ brand_form }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="row">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h3>Recent Returns</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Band</th>
+                                <th>Number of returns (Units)</th>
+                                <th>Reason</th>
+                                <th>Date Returned</th>
+                                <th>Received By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for return in returns %}
+                            <tr>
+                                <td>{{ return.brand }}</td>
+                                <td>{{ return.number }}</td>
+                                <td>{{ return.reason }}</td>
+                                <td>{{ return.date_returned.date }}</td>
+                                <td>{{ return.received_by }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h3>Recent Dispatches</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Brand</th>
+                                <th>Item</th>
+                                <th>Number</th>
+                                <th>Date Dispatched (Units)</th>
+                                <th>Dispatched By</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for dispatch in dispatches %}
+                            <tr>
+                                <td>{{ dispatch.stock.batch_item.brand.name }}</td>
+                                <td>{{ dispatch.stock.batch_item.brand.item }}</td>
+                                <td>{{ dispatch.number }}</td>
+                                <td>{{ dispatch.date_dispatched }}</td>
+                                <td>{{ dispatch.dispatched_by }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<div class="row">
+
+    {% if batch_to_del %}
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h3>Delete Request ({{ batch_to_del.count }})</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Batch ID</th>
+                                <th>Created At</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for batch in batch_to_del %}
+                            <tr>
+                                <td>{{ batch.batch_id }}</td>
+                                <td>{{ batch.created_at }}</td>
+                                <td>
+                                    <a href="{% url 'stock_system:batch-details' batch.id %}"
+                                        class="btn  btn-outline"><i
+                                            class="mdi mdi-4x mdi-arrow-right-drop-circle-outline"
+                                            title="Proceed to delete"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

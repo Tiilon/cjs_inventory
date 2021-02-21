@@ -1,0 +1,16 @@
+{% extends 'layout/admin_layout.html' %}
+{% load bootstrap4 %}
+{% block page_title %}
+    <h3>Add a new batch of stock</h3>
+{% endblock %}
+{% block contents %}
+    {#    <form action="#" method="post">{% csrf_token %}#}
+    {#    {% bootstrap_form form %}#}
+    {#        <input type="submit" class="btn btn-danger btn-sm">#}
+    {#    </form>#}
+    <form action="" method="post">{% csrf_token %}
+{#        <input type="hidden" value="batch" name="form_type">#}
+            {% bootstrap_form form %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock %}

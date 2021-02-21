@@ -1,0 +1,49 @@
+{% extends 'layout/admin_layout.html' %}
+{% load static   %}
+{% load bootstrap4 %}
+{% block dash %}
+    active
+{% endblock %}
+{% block page_title %}
+    <h3>Stock Details</h3>
+{% endblock %}
+{% block css %}
+    <link href="{% static 'vendors/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+{% endblock %}
+{% block add %}
+
+{% endblock %}
+{% block contents %}
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <p><h3>Brand :  {{ stock.batch_item.brand.name}}</h3></p>
+                    <hr>
+                    <p><h3>Item :   {{ stock.batch_item.brand.item }}</h3></p>
+                    <hr>
+                    <p><h3>Total units available : {% if stock.no_units_left %}{{ stock.no_units_left }}{% else %}{{ stock.no_units_available}}{% endif %}</h3></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 ml-5">
+            <h4>Dispatch Item</h4>
+            <hr>
+            <div>
+                <form action="#" method="post">{% csrf_token %}
+                    {% bootstrap_form form %}
+                    <input type="submit" class="btn btn-primary btn-sm" value="Submit">
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+
+{% block js %}
+    <script src="{% static 'vendors/datatables/jquery.dataTables.min.js'%}"></script>
+    <script src="{% static 'vendors/datatables/dataTables.bootstrap4.min.js'%}"></script>
+    <script src="{% static 'js/demo/datatables-demo.js'%}"></script>
+{% endblock %}

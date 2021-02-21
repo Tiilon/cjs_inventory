@@ -1,0 +1,90 @@
+{% extends 'layout/admin_layout.html' %}
+{% load static   %}
+{% load bootstrap4 %}
+{% block return %}
+    active
+{% endblock %}
+{% block add %}
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#returnBackdrop">
+        Make a Return
+    </button>
+{% endblock %}
+{% block page_title %}
+    <h3>Returns</h3>
+{% endblock %}
+{% block css %}
+    <link href="{% static 'vendors/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+{% endblock %}
+{% block js %}
+    <script src="{% static 'vendors/datatables/jquery.dataTables.min.js'%}"></script>
+    <script src="{% static 'vendors/datatables/dataTables.bootstrap4.min.js'%}"></script>
+    <script src="{% static 'js/demo/datatables-demo.js'%}"></script>
+{% endblock %}
+{% block contents %}
+    <form action="#" method="post">{% csrf_token %}
+        <div class="modal fade" id="returnBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">New Return</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="id_brand">Select the brand</label>
+                            <select name="brand" id="id_brand" class="custom-select">
+                                <option value="">-------</option>
+                                {% for b in brand %}
+                                    <option value="{{b.id }}">{{ b.name }} | {{ b.item }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_number">Number of Returns (Units)</label>
+                            <input type="number" class="form-control" name="number" id="id_number" placeholder="input number of returns">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_reason">Reason for return</label>
+                            <input type="text" name="reason" id="id_reason" class="form-control" placeholder="reason for return">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="table-responsive mt-5"  >
+        <table class="table table-bordered" id="dataTable">
+            <thead>
+            <tr>
+                <th>Band</th>
+                <th>Number of returns (Units)</th>
+                <th>Reason</th>
+                <th>Date Returned</th>
+                <th>Received By</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for return in returns %}
+            <tr>
+                <td>{{ return.brand }}</td>
+                <td>{{ return.number }}</td>
+                <td>{{ return.reason }}</td>
+                <td>{{ return.date_returned.date }}</td>
+                <td>{{ return.received_by }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+    <div class="mt-5 float-right">
+        <a href="{% url 'stock_system:stock_page' %}" class="btn btn-success">Done</a>
+    </div>
+
+{% endblock %}

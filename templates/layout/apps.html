@@ -1,0 +1,30 @@
+{% extends 'layout/layout.html' %}
+{% block page_title %}
+    <h3>Department</h3>
+{% endblock %}
+{% block contents %}
+    <div class="row">
+        <div class="col-6">
+            <a href="{% url 'stock_system:stock_page' %}">
+                <div class="card bg-primary">
+                    <div class="card-body text-white">
+                        Warehouse Attendant
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    {% if user.user_type == 'MG' %}
+     <div class="row mt-5">
+        <div class="col-6">
+            <a href="{% url 'stock_system:management_page' %}">
+                <div class="card bg-primary">
+                    <div class="card-body text-white">
+                        Management
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

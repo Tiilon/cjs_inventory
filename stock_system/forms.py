@@ -57,3 +57,15 @@ class DispatchForm(ModelForm):
         widgets={
             'number': NumberInput(attrs={'placeholder': 'Enter quantity to dispatch....', 'required': True})
         }
+
+
+class ReturnForm(ModelForm):
+    class Meta:
+        model = Returns
+        fields = (
+            'number',
+            'reason',
+            )
+        widgets = {
+            'number': NumberInput(attrs={'placeholder': 'Enter quantity returned....', 'required': True})
+        }

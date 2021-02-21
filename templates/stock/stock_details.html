@@ -37,6 +37,39 @@
             </div>
         </div>
     </div>
+    <hr>
+    <hr>
+    <div class="row mt-5">
+
+        <div class="col-6">
+            <h3>Make a return</h3>
+            <hr>
+            <form action="{% url 'stock_system:make-return' stock.id %}" method="post">{% csrf_token %}
+            {% bootstrap_form form2 %}
+            <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+{#            <form action="{% url 'stock_system:make-return' stock.id %}" method="post">#}
+{#                <div class="form-group">#}
+{#                    <label for="id_brand">Select the brand</label>#}
+{#                    <select name="brand" id="id_brand" class="custom-select">#}
+{#                        <option value="">-------</option>#}
+{#                        {% for b in brand %}#}
+{#                            <option value="{{b.id }}">{{ b.name }} | {{ b.item }}</option>#}
+{#                        {% endfor %}#}
+{#                    </select>#}
+{#                </div>#}
+{#                <div class="form-group">#}
+{#                    <label for="id_reason">Reason for return</label>#}
+{#                    <input type="text" name="reason" id="id_reason" class="form-control" placeholder="reason for return">#}
+{#                </div>#}
+{#                <div class="form-group">#}
+{#                    <label for="id_number">Number of Returns (Units)</label>#}
+{#                    <input type="number" class="form-control" name="number" id="id_number" placeholder="input number of returns">#}
+{#                </div>#}
+
+{#            </form>#}
+        </div>
+    </div>
 
 {% endblock %}
 

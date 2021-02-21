@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView, DetailView, TemplateView
-from stock_system.forms import UserForm, BrandForm, BatchItemsForm, DispatchForm
+from stock_system.forms import UserForm, BrandForm, BatchItemsForm, DispatchForm, ReturnForm
 from stock_system.models import Stock, Brand, BatchId, generate, BatchItems, Returns, Dispatched
 from users.models import User
 
@@ -64,11 +64,16 @@ def stock(request):
 
 def stock_dispatch(request, id):
     stock = Stock.objects.get(id=id)
+    brand =Brand.objects.all()
     form = DispatchForm
+    form2 = ReturnForm
 
     context = {
+        'brand': brand,
         'stock': stock,
-        'form': form
+        'returns':returns,
+        'form': form,
+        'form2':form2
     }
 
     if request.method == 'POST':
@@ -79,7 +84,7 @@ def stock_dispatch(request, id):
             form.save()
         stock.dispatches.add(form.instance)
         stock.no_units_dispatched += form.instance.number
-        stock.no_units_left = stock.no_units_available-stock.no_units_dispatched
+        stock.no_units_left = stock.no_units_available - stock.no_units_dispatched
         stock.save()
         return redirect(reverse_lazy('stock_system:stock_page'))
     return render(request, 'stock/stock_details.html', context)
@@ -166,6 +171,28 @@ def batch_details(request, id):
     return render(request, 'stock/batch_details_batch.html', context)
 
 
+def make_returns(request, id):
+    stock = Stock.objects.get(id=id)
+    form = ReturnForm
+
+    context = {
+        'stock': stock,
+        'form': form
+    }
+
+    if request.method == 'POST':
+        form = ReturnForm(request.POST)
+        if form.is_valid():
+            form.instance.stock = stock
+            if form.instance.reason == 'Unwanted':
+                stock.no_units_left += form.instance.number
+            form.instance.date_returned = timezone.now()
+            form.instance.received_by = request.user
+            form.save()
+            stock.save()
+    return redirect(reverse_lazy('stock_system:returned_items'))
+
+
 def returns(request):
     brand = Brand.objects.all()
     returns = Returns.objects.all()
@@ -175,13 +202,13 @@ def returns(request):
         'returns': returns
     }
 
-    if request.method == 'POST':
-        new_return = Returns.objects.create(
-            brand=Brand.objects.get(id=request.POST.get('brand')),
-            number=request.POST.get('number'),
-            reason=request.POST.get('reason'),
-            received_by= request.user
-        )
+    # if request.method == 'POST':
+    #     new_return = Returns.objects.create(
+    #         brand=Brand.objects.get(id=request.POST.get('brand')),
+    #         number=request.POST.get('number'),
+    #         reason=request.POST.get('reason'),
+    #         received_by= request.user
+    #     )
     return render(request, 'stock/returns.html', context=context)
 
 

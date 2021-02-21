@@ -11,6 +11,7 @@ bootstrap4 = "*"
 psycopg2 = "*"
 django-bootstrap = "*"
 django-bootstrap4 = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.8"

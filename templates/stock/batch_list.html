@@ -20,7 +20,7 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable">
+                <table class="table table-bordered" >
                     <thead>
                     <tr>
                         <th>Batch ID</th>
@@ -34,7 +34,7 @@
                         <tr>
                             <td>{{ b.batch_id }}</td>
                             <td>{{ b.created_by }}</td>
-                            <td>{{ b.created_at }}</td>
+                            <td>{{ b.created_at.date }}</td>
                             <td>
                                 <a href="{% url 'stock_system:batch-details' b.id %}" type="button" class="btn btn-primary">
                                     {% if b.batch_item %} Details {% else %} Add Items {% endif %}

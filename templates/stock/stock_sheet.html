@@ -25,9 +25,6 @@
                 <thead>
                 <tr>
                     <th>Brand</th>
-                    {#                    <th>Number of boxes of received</th>#}
-                    {#                    <th>Number of units in box</th>#}
-{#                    <th>Total units accumulated</th>#}
                     <th>Current Stock Number</th>
                     <th>Units Dispatched</th>
                     <th>Details</th>
@@ -37,9 +34,6 @@
                 {% for br in stock %}
                     <tr>
                         <td>{{ br.batch_item.brand.name}} | {{ br.batch_item.brand.item }}</td>
-                        {#                    <td>{{ br.batch_item.boxes_received }}</td>#}
-                        {#                    <td>{{ br.batch_item.units_per_box }}</td>#}
-{#                        <td>{{ br.no_units_available }}</td>#}
                         <td>{% if br.no_units_left %}{{ br.no_units_left }}{% else %}{{ br.no_units_available }}{% endif %}</td>
                         <td>{% if br.no_units_dispatched %}{{ br.no_units_dispatched }}{% else %}No Dispatch Yet{% endif %}</td>
                         <td>

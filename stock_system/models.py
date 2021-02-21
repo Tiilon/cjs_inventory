@@ -77,21 +77,28 @@ class Dispatched(models.Model):
     stock = models.ForeignKey(Stock, on_delete=models.SET_NULL, related_name='stock', blank=True, null=True)
 
     def __str__(self):
-        return f"{self.stock.batch_item.brand} || {self.number}"
+        return f"{self.number}"
 
     class Meta:
         ordering = ('-date_dispatched',)
 
 
+REASONS = {
+    ('Expired', 'Expired'),
+    ('Damaged', 'Damaged'),
+    ('Unwanted', 'Unwanted')
+}
+
+
 class Returns(models.Model):
-    brand = models.ForeignKey(Brand, related_name='brand_returns', on_delete=models.SET_NULL, blank=True, null=True)
+    stock = models.ForeignKey(Stock, related_name='stock_returns', on_delete=models.SET_NULL, blank=True, null=True)
     number = models.IntegerField(default=0, blank=True, null=True)
-    reason = models.CharField(max_length=250, blank=True, null=True)
+    reason = models.CharField(max_length=250, blank=True, null=True, choices=REASONS)
     date_returned = models.DateTimeField(default=timezone.now, null=True, blank=True)
     received_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='returns', on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.brand}"
+        return f"{self.stock.batch_item.brand} || {self.number}"
 
     class Meta:
         ordering = ('-date_returned',)

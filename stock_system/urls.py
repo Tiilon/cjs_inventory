@@ -17,5 +17,6 @@ urlpatterns = [
     path('batch/request/del/<id>/', request_del_batch, name='request_del_batch'),
     path('batch/approve/del/<id>/', approve_del, name='approve_del_batch'),
     path('batch/request/list/', delete_request_list, name='delete_request_list'),
-    path('stock/return/<id>/', make_returns, name='make-return')
+    path('stock/return/<id>/', make_returns, name='make-return'),
+    path('stock/reorder/<id>/', reorder, name='reorder_lvl')
 ]

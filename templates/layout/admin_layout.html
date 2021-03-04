@@ -67,7 +67,15 @@
             <li class="{% block dash %}{% endblock %}">
                 <a href="{% url 'stock_system:management_page' %}">
                     <span class="link-title ">Dashboard</span>
-                    <i class="mdi mdi-format-align-justify"></i>
+{#                    <i class="mdi mdi-format-align-justify"></i>#}
+                </a>
+            </li>
+            {% endif %}
+            {% if user.user_type == 'MG' or user.user_type == 'EM' %}
+            <li class="{% block batches %}{% endblock %}">
+                <a href="{% url 'stock_system:batch_list' %}">
+                    <span class="link-title">Batches</span>
+{#                    <i class="mdi mdi-plus"></i>#}
                 </a>
             </li>
             {% endif %}
@@ -108,15 +116,8 @@
         <!-- partial:partials/_footer.html -->
         <footer class="footer">
             <div class="row">
-                <div class="col-sm-6 text-center text-sm-right order-sm-1">
-                    <ul class="text-gray">
-                        <li><a href="#">Terms of use</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                    </ul>
-                </div>
                 <div class="col-sm-6 text-center text-sm-left mt-3 mt-sm-0">
-                    <small class="text-muted d-block">Copyright © 2019 <a href="http://www.uxcandy.co" target="_blank">UXCANDY</a>. All rights reserved</small>
-                    <small class="text-gray mt-2">Handcrafted With <i class="mdi mdi-heart text-danger"></i></small>
+                    <small class="text-muted d-block">Sparrow inc © 2021. All rights reserved</small>
                 </div>
             </div>
         </footer>

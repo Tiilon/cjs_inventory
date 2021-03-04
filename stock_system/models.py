@@ -7,13 +7,24 @@ from django.utils import timezone
 # class Client(models.Model):
 #     name_of_owner = models.CharField(blank=True,null=True, max_length=250)
 #     name_of_company = models.CharField(max_length=250, blank=True, null=True)
+#     contact = models.CharField(max_length=20, blank=True, null=True)
+
+PACKAGE = {
+    ('Box', 'Box'),
+    ('Carton', 'Carton')
+}
 
 
 class Brand(models.Model):
     name = models.CharField(max_length=250, null=True, blank=True)
     item = models.CharField(max_length=250, null=True, blank=True)
+    no_available = models.IntegerField(default=0, null=True, blank=True)
+    no_units_dispatched = models.IntegerField(default=0, null=True, blank=True)
+    reorder_lvl = models.IntegerField(default=0, null=True, blank=True)
+    no_units_left = models.IntegerField(default=0, null=True, blank=True)
+    dispatches = models.ManyToManyField('Dispatched', related_name='brand_dispatches', blank=True)
     batch_item = models.ManyToManyField('BatchItems', related_name='brand_batches', blank=True)
-    # client = models.ForeignKey(Client, related_name='clients_brand', on_delete=models.SET_NULL, blank=True, null=True)
+    # client = models.ManyToManyField(Client, related_name='clients_brands', blank=True)
 
     def __str__(self):
         return f"{self.name} - {self.item}"
@@ -31,12 +42,12 @@ def generate():
 
 class BatchId(models.Model):
     batch_id = models.CharField(default=generate, max_length=100, editable=False, unique=True)
-    # brand = models.ManyToManyField('Brand', related_name='brands', blank=True)
     batch_item = models.ManyToManyField('BatchItems', related_name='batch_items', blank=True)
     complete = models.BooleanField(default=False)
     request_del = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='batch_id', on_delete=models.SET_NULL, blank=True, null=True)
+    # client = models.ForeignKey(Client, related_name='client_batches', on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return f"{self.batch_id}"
@@ -53,6 +64,7 @@ class BatchItems(models.Model):
     total_units = models.IntegerField(default=0, null=True, blank=True)
     man_date = models.DateTimeField(null=True, blank=True)
     exp_date = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
     received_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name='batches',blank=True, null=True)
 
     def __str__(self):
@@ -60,21 +72,21 @@ class BatchItems(models.Model):
 
 
 class Stock(models.Model):
-    batch_item = models.ForeignKey('BatchItems', related_name='stock_batch_item', on_delete=models.SET_NULL,blank=True, null=True)
+    brand = models.ForeignKey('Brand', related_name='stock_brand', on_delete=models.SET_NULL,blank=True, null=True)
     dispatches = models.ManyToManyField('Dispatched', related_name='stock_dispatches', blank=True)
     no_units_available = models.IntegerField(default=0, null=True, blank=True)
     no_units_dispatched = models.IntegerField(default=0, null=True, blank=True)
     no_units_left = models.IntegerField(default=0, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.batch_item.brand}"
+        return f"{self.no_units_available}"
 
 
 class Dispatched(models.Model):
     number = models.IntegerField(default=0, null=True, blank=True)
     date_dispatched = models.DateTimeField(default=timezone.now)
     dispatched_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name='dispatches', blank=True, null=True)
-    stock = models.ForeignKey(Stock, on_delete=models.SET_NULL, related_name='stock', blank=True, null=True)
+    brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, related_name='brand_dispatches', blank=True, null=True)
 
     def __str__(self):
         return f"{self.number}"
@@ -91,14 +103,14 @@ REASONS = {
 
 
 class Returns(models.Model):
-    stock = models.ForeignKey(Stock, related_name='stock_returns', on_delete=models.SET_NULL, blank=True, null=True)
+    brand = models.ForeignKey(Brand, related_name='brand_returns', on_delete=models.SET_NULL, blank=True, null=True)
     number = models.IntegerField(default=0, blank=True, null=True)
     reason = models.CharField(max_length=250, blank=True, null=True, choices=REASONS)
     date_returned = models.DateTimeField(default=timezone.now, null=True, blank=True)
     received_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='returns', on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.stock.batch_item.brand} || {self.number}"
+        return f"{self.number}"
 
     class Meta:
         ordering = ('-date_returned',)

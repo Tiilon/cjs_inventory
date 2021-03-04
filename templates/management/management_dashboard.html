@@ -1,5 +1,6 @@
 {% extends 'layout/admin_layout.html' %}
 {% load static %}
+{% load bootstrap4 %}
 {% block dash %}
 active
 {% endblock %}
@@ -43,13 +44,13 @@ active
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                    <h5 class="modal-title" id="staticBackdropLabel">Add Brand</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    {{ brand_form }}
+                    {% bootstrap_form brand_form %}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -115,8 +116,8 @@ active
                         <tbody>
                             {% for dispatch in dispatches %}
                             <tr>
-                                <td>{{ dispatch.stock.batch_item.brand.name }}</td>
-                                <td>{{ dispatch.stock.batch_item.brand.item }}</td>
+                                <td>{{ dispatch.brand.name }}</td>
+                                <td>{{ dispatch.brand.item }}</td>
                                 <td>{{ dispatch.number }}</td>
                                 <td>{{ dispatch.date_dispatched }}</td>
                                 <td>{{ dispatch.dispatched_by }}</td>

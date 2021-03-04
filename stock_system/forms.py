@@ -27,10 +27,20 @@ class BrandForm(ModelForm):
         model = Brand
         fields=(
             'name',
-            'item'
+            'item',
+            # 'pack_type'
         )
         # widgets = {
         #     'name': TextInput(attrs={'class':'form-control'})
+
+
+class ReorderForm(ModelForm):
+    class Meta:
+        model = Brand
+        fields=(
+            'reorder_lvl',
+            # 'pack_type'
+        )
 
 
 class BatchItemsForm(ModelForm):

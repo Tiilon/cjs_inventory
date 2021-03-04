@@ -10,12 +10,12 @@
             Add Item
         </button>
     {% else %}
-        {% if batch.request_del == False and user.user_type == 'EM'%}
+        {% if batch.request_del == False and user.user_type == 'EM' and batch.created_by == request.user%}
             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#reqdelBackdrop">
                 Request Delete
             </button>
         {% else %}
-            {% if user.user_type == 'EM' %}
+            {% if user.user_type == 'EM' and batch.created_by == request.user%}
                 <i class="text-danger">Delete Request Pending</i>
             {% endif %}
         {% endif %}
@@ -104,7 +104,7 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="id_boxes_received">Number of boxes received</label>
+                                    <label for="id_boxes_received">Number of packs received</label>
                                     <input type="number" class="form-control" name="boxes_received" id="id_boxes_received" placeholder="input number of boxes received">
                                 </div>
                                 <div class="form-group">
@@ -137,7 +137,7 @@
         </div>
     </div>
     {% if error %}
-        <small>{{ error }}</small>
+        <small class="text-danger">{{ error }}</small>
     {% endif %}
     <div class="table-responsive">
         <table class="table-bordered table" id="dataTable">
@@ -146,7 +146,7 @@
                 <th>Brand</th>
                 <th>Boxes Received</th>
                 <th>Total Units</th>
-                <th></th>
+{#                <th>Date Acquired</th>#}
             </tr>
             </thead>
             <tbody>
@@ -155,7 +155,7 @@
                     <td>{{ ba.brand }}</td>
                     <td>{{ ba.boxes_received }} </td>
                     <td>{{ ba.total_units }}</td>
-                    <td></td>
+{#                    <td>{{ ba.created_at }}</td>#}
                 </tr>
             {% endfor %}
             </tbody>

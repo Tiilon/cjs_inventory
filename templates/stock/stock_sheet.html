@@ -11,14 +11,43 @@
     <h3>Stock</h3>
 {% endblock %}
 {% block add %}
-    <form action="{% url 'stock_system:batch_list' %}" method="post">{% csrf_token %}
-        <button class="btn-sm btn btn-outline" type="submit" >
-            <i class=" mdi mdi-albums" title="Previous Batches"> Batches</i>
-        </button>
-    </form>
+    {% for brand in brands %}
+        {% if  brand.no_available <= brand.reorder_lvl %}
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reorderBackdrop">
+                Restock
+            </button>
+        {% endif %}
+    {% endfor %}
+
 {% endblock %}
 {% block contents %}
-
+    <div class="modal fade" id="reorderBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Items to restock</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h6>These are items that are equal or below restock level</h6>
+                    <hr>
+                    {% for brand in brands %}
+                        {% if brand.no_available <= brand.reorder_lvl %}
+                            <ul>
+                                <li><b class="text-danger">{{ brand.name }} || {{ brand.item }}</b></li>
+                            </ul>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a href="{% url 'stock_system:batch_list' %}" class="btn btn-primary" title="Proceed to add items">Create a new batch</a>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable">
@@ -31,10 +60,10 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for br in stock %}
+                {% for br in brands %}
                     <tr>
-                        <td>{{ br.batch_item.brand.name}} | {{ br.batch_item.brand.item }}</td>
-                        <td>{% if br.no_units_left %}{{ br.no_units_left }}{% else %}{{ br.no_units_available }}{% endif %}</td>
+                        <td>{{ br.name}} | {{ br.item }}</td>
+                        <td class="{% if br.no_available <= br.reorder_lvl %}text-danger{% endif %}">{{ br.no_available }}</td>
                         <td>{% if br.no_units_dispatched %}{{ br.no_units_dispatched }}{% else %}No Dispatch Yet{% endif %}</td>
                         <td>
                             <a href="{% url 'stock_system:dispatch_stock' br.id %}" class="btn btn-outline btn-primary"> View</a>
